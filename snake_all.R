@@ -1,8 +1,8 @@
 #! load_script(src = "https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/p5.js")
 
-bkgrd_x = 400
-bkgrd_y  = 300
-frame_rate = 10
+bkgrd_x = 500
+bkgrd_y  = 500
+frame_rate = 5
 setup <- function(){
   createCanvas(bkgrd_x, bkgrd_y)
   frameRate(frame_rate)
@@ -15,7 +15,7 @@ draw <- function(){
   
   # Snake details
   snake_col = color('rgb(0,255,0)') 
-  snake_wid =  10
+  snake_wid =  20
   start_snake_len = 5
   
   # Fruit details
@@ -30,8 +30,8 @@ draw <- function(){
     snake_x = seq(0,start_snake_len)*snake_wid + bkgrd_x/2
     snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
     
-    fruit_x = bkgrd_x/2 + 100 #runif(1, min = 0, max = bkgrd_x)
-    fruit_y = bkgrd_y/2 #runif(1, min = 0, max = bkgrd_y)
+    fruit_x = runif(1, min = 0, max = bkgrd_x)
+    fruit_y = runif(1, min = 0, max = bkgrd_y)
     fruit_eaten = FALSE
     
   }
@@ -39,7 +39,7 @@ draw <- function(){
   # Draw the snake
   fill(snake_col)
   for(i in 0:snake_len){
-    square(snake_x[i], snake_y[i], 10)
+    square(snake_x[i], snake_y[i], snake_wid)
   }
   
   # Draw the fruit
@@ -89,17 +89,15 @@ draw <- function(){
       }
     }
     
-    if((snake_x[0] - fruit_x) < snake_wid & 
-       (snake_y[0] == fruit_y) < snake_wid){
-      fruit_eaten = TRUE
+    if(abs(snake_x[1] - fruit_x) < snake_wid & 
+       abs(snake_y[1] - fruit_y) < snake_wid){
+      # fruit_eaten = TRUE
+    # }
+    # if(fruit_eaten){
       # snake_len = 1 # increase snake length
-    }  
-    
-    if(fruit_eaten){
       fruit_x = runif(1, min = 0, max = bkgrd_x/2)
       fruit_y = runif(1, min = 0, max = bkgrd_y/2)
-      circle(fruit_x,  fruit_y, fruit_radius)
-      fruit_eaten = FALSE
+      circle(fruit_x, fruit_y, fruit_radius)
     }
     
   }
