@@ -2,8 +2,10 @@
 
 bkgrd_x = 400
 bkgrd_y  = 300
-setup <- function() {
+frame_rate = 10
+setup <- function(){
   createCanvas(bkgrd_x, bkgrd_y)
+  frameRate(frame_rate)
 }
 
 draw <- function(){
@@ -19,7 +21,7 @@ draw <- function(){
   # Fruit details
   fruit_col = color('rgb(255,0,0')
   fruit_stay_length = 50
-  fruit_radius = 20
+  fruit_radius = snake_wid
   
   # Initialise game
   if(frameCount < 2){
@@ -28,8 +30,8 @@ draw <- function(){
     snake_x = seq(0,start_snake_len)*snake_wid + bkgrd_x/2
     snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
     
-    fruit_x = runif(1, min = 0, max = bkgrd_x/2)
-    fruit_y = runif(1, min = 0, max = bkgrd_y/2)
+    fruit_x = bkgrd_x/2 + 100 #runif(1, min = 0, max = bkgrd_x)
+    fruit_y = bkgrd_y/2 #runif(1, min = 0, max = bkgrd_y)
     fruit_eaten = FALSE
     
   }
@@ -87,9 +89,10 @@ draw <- function(){
       }
     }
     
-    if(snake_x[1] == fruit_x & snake_y[1] == fruit_y){
+    if((snake_x[0] - fruit_x) < snake_wid & 
+       (snake_y[0] == fruit_y) < snake_wid){
       fruit_eaten = TRUE
-      # increase snake length
+      # snake_len = 1 # increase snake length
     }  
     
     if(fruit_eaten){
