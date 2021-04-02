@@ -22,7 +22,6 @@ draw <- function(){
     snake_len = start_snake_len
     snake_x = seq(0,start_snake_len)*snake_wid + bkgrd_x/2
     snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
-    # keyCode = RIGHT_ARROW
   }
   
   # Draw the snake
@@ -77,7 +76,3 @@ draw <- function(){
   }
 
 }
-
-# Two hurdles: 
-# - pop on/ pop off
-# - add to snake using frameCount
