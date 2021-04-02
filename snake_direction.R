@@ -3,6 +3,7 @@
 bkgrd_x = 400
 bkgrd_y  = 300
 setup <- function() {
+  frameRate(10)
   createCanvas(bkgrd_x, bkgrd_y)
 }
 
@@ -34,44 +35,49 @@ draw <- function(){
   if(frameCount > 2){
     
     # Plain right shift
+    ### NOT WORKING
     if(keyCode == RIGHT_ARROW){
-      snake_x = snake_x + snake_wid
-      for(i in 0:snake_len){
+      old_snake_x = snake_x
+      old_snake_y = snake_y
+      for(i in 1:snake_len){
+        snake_x[i] = old_snake_x[i-1]
+        snake_y[i] = old_snake_y[i-1]
         if(snake_x[i] > bkgrd_x){
           snake_x[i] = 0
-        }
+        } 
       }
+      snake_x[snake_len] = old_snake_x[snake_len] + snake_wid
     }
     
-    # Plain left shift
-    if(keyCode == LEFT_ARROW){
-      snake_x = snake_x - snake_wid
-      for(i in 0:snake_len){
-        if(snake_x[i] < 0){
-          snake_x[i] = bkgrd_x
-        }
-      }
-    }
-    
-    # Downwards shift
-    if(keyCode == DOWN_ARROW){
-      snake_y = snake_y + snake_wid
-      for(i in 0:snake_len){
-        if(snake_y[i] > bkgrd_y){
-          snake_y[i] = 0
-        }
-      }
-    }
-    
-    # Upwards shift
-    if(keyCode == UP_ARROW){
-      snake_y = snake_y - snake_wid
-      for(i in 0:snake_len){
-        if(snake_y[i] < 0){
-          snake_y[i] = bkgrd_y
-        }
-      }
-    }
+    # # Plain left shift
+    # if(keyCode == LEFT_ARROW){
+    #   snake_x = snake_x - snake_wid
+    #   for(i in 0:snake_len){
+    #     if(snake_x[i] < 0){
+    #       snake_x[i] = bkgrd_x
+    #     }
+    #   }
+    # }
+    # 
+    # # Downwards shift
+    # if(keyCode == DOWN_ARROW){
+    #   snake_y = snake_y + snake_wid
+    #   for(i in 0:snake_len){
+    #     if(snake_y[i] > bkgrd_y){
+    #       snake_y[i] = 0
+    #     }
+    #   }
+    # }
+    # 
+    # # Upwards shift
+    # if(keyCode == UP_ARROW){
+    #   snake_y = snake_y - snake_wid
+    #   for(i in 0:snake_len){
+    #     if(snake_y[i] < 0){
+    #       snake_y[i] = bkgrd_y
+    #     }
+    #   }
+    # }
     
   }
 
