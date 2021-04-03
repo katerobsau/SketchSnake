@@ -109,3 +109,8 @@ draw <- function(){
   }
 
 }
+
+# important to track the direction of the snake head
+# when the snake goes left this creates two options 
+# for how to append the new square / create movement
+# having some trouble with a boolean if statement to do both
