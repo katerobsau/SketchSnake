@@ -55,24 +55,24 @@ draw <- function(){
       old_snake_x = snake_x
       old_snake_y = snake_y
       
-      # if(direction == "right"){
-        for(i in 1:snake_len){
-          snake_x[i] = old_snake_x[i-1]
-          snake_y[i] = old_snake_y[i-1]
-        }
-        new_x = old_snake_x[0] - snake_wid
-        snake_x[0] = new_x
-        if(new_x < 0) snake_x[0] = bkgrd_x
-      # }
+      # # if(direction == "right"){
+      #   for(i in 1:snake_len){
+      #     snake_x[i] = old_snake_x[i-1]
+      #     snake_y[i] = old_snake_y[i-1]
+      #   }
+      #   new_x = old_snake_x[0] - snake_wid
+      #   snake_x[0] = new_x
+      #   if(new_x < 0) snake_x[0] = bkgrd_x
+      # # }
       
       # if(direction != "right"){
-      #   for(i in 0:(snake_len - 1)){
-      #     snake_x[i] = old_snake_x[i+1]
-      #     snake_y[i] = old_snake_y[i+1]
-      #   }
-      #   # new_x = old_snake_x[snake_len] - snake_wid
-      #   # snake_x[snake_len] = new_x
-      #   # if(new_x < 0) snake_x[snake_len] = bkgrd_x
+        for(i in 0:(snake_len - 1)){
+          snake_x[i] = old_snake_x[i+1]
+          snake_y[i] = old_snake_y[i+1]
+        }
+        new_x = old_snake_x[snake_len] - snake_wid
+        snake_x[snake_len] = new_x
+        if(new_x < 0) snake_x[snake_len] = bkgrd_x
       # }
       
       direction = "left"
