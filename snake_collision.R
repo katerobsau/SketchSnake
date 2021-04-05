@@ -115,3 +115,5 @@ draw <- function(){
   }
 
 }
+
+# Clash with direction code and collision code

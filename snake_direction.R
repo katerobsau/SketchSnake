@@ -110,6 +110,9 @@ draw <- function(){
 
 }
 
+# bug with up then down / bug with left then right
+# ?? Not with this code but in snake_all ?? why
+
 # important to track the direction of the snake head
 # when the snake goes left this creates two options 
 # for how to append the new square / create movement
