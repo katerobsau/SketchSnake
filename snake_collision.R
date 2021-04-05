@@ -21,8 +21,6 @@ draw <- function(){
   if(frameCount < 2){
     snake_stop = FALSE
     snake_len = start_snake_len
-    # old_snake_x = seq(0, start_snake_len)
-    # old_snake_y = seq(0, start_snake_len)
     snake_x = seq(0,start_snake_len)*snake_wid + bkgrd_x/2
     snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
   }
@@ -117,8 +115,3 @@ draw <- function(){
   }
 
 }
-
-# important to track the direction of the snake head
-# when the snake goes left this creates two options 
-# for how to append the new square / create movement
-# having some trouble with a boolean if statement to do both
