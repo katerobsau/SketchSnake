@@ -107,3 +107,5 @@ draw <- function(){
 }
 # has issues with boolean strings - so  used numeric codes
 # latest version of sketch doesn't have this problem
+
+# be nice to synthesis code using a function for direction

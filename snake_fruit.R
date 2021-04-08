@@ -3,6 +3,8 @@
 # Background
 bkgrd_x = 400
 bkgrd_y  = 300
+fruit_x = 10
+fruit_y = 10
 
 setup <- function() {
   createCanvas(bkgrd_x, bkgrd_y)
@@ -14,17 +16,17 @@ draw <- function() {
   background(0, 0, 33)    
   
   # Fruit details
-  fruit_col = color('rgb(255,0,0')
+  fruit_col = color('rgb(255,0,0)')
   fruit_stay_length = 50
   fruit_radius = 20
   
   # Draw a piece of fruit
-  timer = 2
+  timer = 1
   if(frameCount%%fruit_stay_length < timer){
      fruit_x = runif(1, min = 0, max = bkgrd_x/2)
      fruit_y = runif(1, min = 0, max = bkgrd_y/2)
   }
-  circle(fruit_x,  fruit_y, fruit_radius)
+  circle(fruit_x, fruit_y, fruit_radius)
   
 }
 
