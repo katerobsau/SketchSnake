@@ -36,7 +36,8 @@ inherit_old_snake <- function(snake_vec, snake_len, shift){
   
 }
 
-grow_snake <- function(xy_value, snake_vec, snake_len, snake_wid, travel_direction){
+grow_snake <- function(xy_value, snake_vec, snake_len, snake_wid, 
+                       travel_direction){
   
   snake_vec <- inherit_old_snake(snake_vec, snake_len, shift = FALSE)
   
@@ -47,7 +48,7 @@ grow_snake <- function(xy_value, snake_vec, snake_len, snake_wid, travel_directi
            xy_value == 2 & travel_direction  == 1){
     snake_vec[snake_len] = snake_vec[snake_len - 1] - snake_wid
   }else{
-    snake_vec[snake_len] = snake_vec[snake_len - 1]
+    snake_vec[snake_len] = snake_vec[snake_len - 1] 
   }
   
   return(snake_vec)

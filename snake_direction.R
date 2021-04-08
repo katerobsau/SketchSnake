@@ -13,6 +13,43 @@ snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
 travel_direction = 0
 last_direction = 0
 
+inherit_old_snake <- function(snake_vec, snake_len, shift){
+  
+  old_snake_vec = snake_vec
+  snake_vec = seq(0, snake_len)
+  
+  if(shift == FALSE){
+    for(i in 0:(snake_len - 1)) snake_vec[i] = old_snake_vec[i]
+  }else{
+    for(i in 0:(snake_len - 1)) snake_vec[i] = old_snake_vec[i + 1]
+  }
+  
+  return(snake_vec)
+  
+}
+
+move_snake <- function(xy_value, snake_vec, snake_len, snake_wid, 
+                       travel_direction, max_value){
+  
+  snake_vec <- inherit_old_snake(snake_vec, snake_len, shift = TRUE)
+  
+  if(xy_value == 1 & travel_direction == 2 |
+     xy_value == 2 & travel_direction == 3){
+    new_value = snake_vec[snake_len - 1] + snake_wid 
+    if(new_value > max_value) new_value = 0
+      snake_vec[snake_len] = new_value
+  }else if(xy_value == 1 & travel_direction == 4 |
+           xy_value == 2 & travel_direction  == 1){
+    new_value = snake_vec[snake_len - 1] - snake_wid 
+    if(new_value < 0) new_value = max_value
+    snake_vec[snake_len] = new_value
+  }else{
+    snake_vec[snake_len] = snake_vec[snake_len - 1]
+  }
+  
+  return(snake_vec)
+}
+
 setup <- function() {
   frameRate(frame_rate)
   createCanvas(bkgrd_x, bkgrd_y)
@@ -48,60 +85,25 @@ draw <- function(){
     # Game Start
   }
   
-  # Move snake right
-  if(travel_direction == 2){
-    old_snake_x = snake_x
-    old_snake_y = snake_y
-    for(i in 0:(snake_len - 1)){
-      snake_x[i] = old_snake_x[i+1]
-      snake_y[i] = old_snake_y[i+1]
-    }
-    new_x = old_snake_x[snake_len] + snake_wid
-    snake_x[snake_len] = new_x
-    if(new_x > bkgrd_x) snake_x[snake_len] = 0
-    last_direction = 2
-  }
-  
-  # Move snake left
-  if(travel_direction == 4){
-    old_snake_x = snake_x
-    old_snake_y = snake_y
-    for(i in 0:(snake_len - 1)){
-      snake_x[i] = old_snake_x[i+1]
-      snake_y[i] = old_snake_y[i+1]
-    }
-    new_x = old_snake_x[snake_len] - snake_wid
-    snake_x[snake_len] = new_x
-    if(new_x < 0) snake_x[snake_len] = bkgrd_x
-    last_direction = 4
-  }
-  
-  # Move snake down
-  if(travel_direction == 3){
-    old_snake_x = snake_x
-    old_snake_y = snake_y
-    for(i in 0:(snake_len - 1)){
-      snake_x[i] = old_snake_x[i+1]
-      snake_y[i] = old_snake_y[i+1]
-    }
-    new_y = old_snake_y[snake_len] + snake_wid
-    snake_y[snake_len] = new_y
-    if(new_y > bkgrd_y) snake_y[snake_len] = 0
-    last_direction = 3
-  }
-  
-  # Move snake up
-  if(travel_direction == 1){
-    old_snake_x = snake_x
-    old_snake_y = snake_y
-    for(i in 0:(snake_len - 1)){
-      snake_x[i] = old_snake_x[i+1]
-      snake_y[i] = old_snake_y[i+1]
-    }
-    new_y = old_snake_y[snake_len] - snake_wid
-    snake_y[snake_len] = new_y
-    if(new_y < 0) snake_y[snake_len] = bkgrd_y
-    last_direction = 1
+  # Move the snake
+  if(travel_direction != 0){
+    
+    snake_x = move_snake(xy_value = 1, 
+                         snake_vec = snake_x, 
+                         snake_len = snake_len, 
+                         snake_wid = snake_wid, 
+                         travel_direction = travel_direction, 
+                         max_value = bkgrd_x)
+    
+    snake_y = move_snake(xy_value = 2, 
+                         snake_vec = snake_y, 
+                         snake_len = snake_len, 
+                         snake_wid = snake_wid, 
+                         travel_direction = travel_direction, 
+                         max_value = bkgrd_y)
+    
+    last_direction = travel_direction
+    
   }
 
 }

@@ -5,14 +5,88 @@ bkgrd_y  = 500
 bkgrd_col = 33
 
 frame_rate = 10
+last_direction = 0
+travel_direction = 2
 
+snake_stop = FALSE
 snake_wid =  10
 start_snake_len = 5
 snake_green = 255
 
-fruit_stay_length = 50
 fruit_radius = snake_wid
 fruit_red = 255
+# fruit_stay_length = 50
+
+snake_len = start_snake_len
+snake_x = seq(0,start_snake_len)*snake_wid + bkgrd_x/2
+snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
+
+fruit_x = runif(1, min = 0, max = bkgrd_x)%%snake_wid * snake_wid
+fruit_y = runif(1, min = 0, max = bkgrd_y)%%snake_wid * snake_wid
+
+inherit_old_snake <- function(snake_vec, snake_len, shift){
+  
+  old_snake_vec = snake_vec
+  snake_vec = seq(0, snake_len)
+  
+  if(shift == FALSE){
+    for(i in 0:(snake_len - 1)) snake_vec[i] = old_snake_vec[i]
+  }else{
+    for(i in 0:(snake_len - 1)) snake_vec[i] = old_snake_vec[i + 1]
+  }
+  
+  return(snake_vec)
+  
+}
+
+grow_snake <- function(xy_value, snake_vec, snake_len, snake_wid, travel_direction){
+  
+  snake_vec <- inherit_old_snake(snake_vec, snake_len, shift = FALSE)
+  
+  if(xy_value == 1 & travel_direction == 2 |
+     xy_value == 2 & travel_direction == 3){
+    snake_vec[snake_len] = snake_vec[snake_len - 1] + snake_wid 
+  }else if(xy_value == 1 & travel_direction == 4 |
+           xy_value == 2 & travel_direction  == 1){
+    snake_vec[snake_len] = snake_vec[snake_len - 1] - snake_wid
+  }else{
+    snake_vec[snake_len] = snake_vec[snake_len - 1]
+  }
+  
+  return(snake_vec)
+}
+
+move_snake <- function(xy_value, snake_vec, snake_len, snake_wid, 
+                       travel_direction, max_value){
+  
+  snake_vec <- inherit_old_snake(snake_vec, snake_len, shift = TRUE)
+  
+  if(xy_value == 1 & travel_direction == 2 |
+     xy_value == 2 & travel_direction == 3){
+    new_value = snake_vec[snake_len - 1] + snake_wid 
+    if(new_value > max_value) new_value = 0
+    snake_vec[snake_len] = new_value
+  }else if(xy_value == 1 & travel_direction == 4 |
+           xy_value == 2 & travel_direction  == 1){
+    new_value = snake_vec[snake_len - 1] - snake_wid 
+    if(new_value < 0) new_value = max_value
+    snake_vec[snake_len] = new_value
+  }else{
+    snake_vec[snake_len] = snake_vec[snake_len - 1]
+  }
+  
+  return(snake_vec)
+}
+
+# check_collision <- function(snake_x_coord, snake_y_coord, 
+#                             collsion_x, collision_y,
+#                             snake_wid){
+#   dx = abs(snake_x_coord - collision_x)
+#   dy = abs(snake_y_coord - collision_y)
+#   collision_event = FALSE
+#   if(dx < snake_wid & dy < snake_wid) collision_event =  TRUE
+#   return(collision_event)
+# }
 
 setup <- function(){
   createCanvas(bkgrd_x, bkgrd_y)
@@ -21,22 +95,8 @@ setup <- function(){
 
 draw <- function(){
   
-  #Draw the background colour
+  # Draw the background
   background(0, 0, bkgrd_col)    
-  
-  # Initialise game
-  if(frameCount < 2){
-    
-    # Initialise snake
-    snake_stop = FALSE
-    snake_len = start_snake_len
-    snake_x = seq(0,start_snake_len)*snake_wid + bkgrd_x/2
-    snake_y = seq(0,start_snake_len)*0 + bkgrd_y/2
-    
-    # Initialise fruit
-    fruit_x = runif(1, min = 0, max = bkgrd_x)%%snake_wid * snake_wid
-    fruit_y = runif(1, min = 0, max = bkgrd_y)%%snake_wid * snake_wid
-  }
   
   # Draw the snake
   fill(0, snake_green, 0)
@@ -48,79 +108,41 @@ draw <- function(){
   fill(fruit_red, 0, 0)
   circle(fruit_x,  fruit_y, fruit_radius)
   
-  # Game Play
-  if(frameCount > 2  & snake_stop == FALSE){
+  # Determine movement direction
+  if(keyCode == RIGHT_ARROW && last_direction != 4){
+    travel_direction = 2
+  }else if(keyCode == LEFT_ARROW && last_direction != 2){
+    travel_direction = 4
+  }else if(keyCode == DOWN_ARROW && last_direction != 1){
+    travel_direction = 3
+  }else if(keyCode == UP_ARROW && last_direction != 3){
+    travel_direction = 1
+  }else if(keyCode == ENTER){
+    travel_direction = 0 # Game Pause
+  }else{
+    # Game Start
+  }
+  
+  # Move the snake
+  if(travel_direction != 0 & snake_stop == FALSE){
     
-    # Right Move
-    if(keyCode == RIGHT_ARROW){
-      direction = "right"
-      old_snake_x = snake_x
-      old_snake_y = snake_y
-      for(i in 0:(snake_len - 1)){
-        snake_x[i] = old_snake_x[i+1]
-        snake_y[i] = old_snake_y[i+1]
-      }
-      new_x = old_snake_x[snake_len] + snake_wid
-      snake_x[snake_len] = new_x
-      if(new_x > bkgrd_x) snake_x[snake_len] = 0
-    }
+    snake_x = move_snake(xy_value = 1, 
+                         snake_vec = snake_x, 
+                         snake_len = snake_len, 
+                         snake_wid = snake_wid, 
+                         travel_direction = travel_direction, 
+                         max_value = bkgrd_x)
     
-    # Left Move
-    if(keyCode == LEFT_ARROW){
-      
-      old_snake_x = snake_x
-      old_snake_y = snake_y
-      
-      # # if(direction == "right"){
-      #   for(i in 1:snake_len){
-      #     snake_x[i] = old_snake_x[i-1]
-      #     snake_y[i] = old_snake_y[i-1]
-      #   }
-      #   new_x = old_snake_x[0] - snake_wid
-      #   snake_x[0] = new_x
-      #   if(new_x < 0) snake_x[0] = bkgrd_x
-      # # }
-      
-      # if(direction != "right"){
-      for(i in 0:(snake_len - 1)){
-        snake_x[i] = old_snake_x[i+1]
-        snake_y[i] = old_snake_y[i+1]
-      }
-      new_x = old_snake_x[snake_len] - snake_wid
-      snake_x[snake_len] = new_x
-      if(new_x < 0) snake_x[snake_len] = bkgrd_x
-      # }
-      
-      direction = "left"
-    }
+    snake_y = move_snake(xy_value = 2, 
+                         snake_vec = snake_y, 
+                         snake_len = snake_len, 
+                         snake_wid = snake_wid, 
+                         travel_direction = travel_direction, 
+                         max_value = bkgrd_y)
     
-    # Downwards Move
-    if(keyCode == DOWN_ARROW){
-      direction = "down"
-      old_snake_x = snake_x
-      old_snake_y = snake_y
-      for(i in 0:(snake_len - 1)){
-        snake_x[i] = old_snake_x[i+1]
-        snake_y[i] = old_snake_y[i+1]
-      }
-      new_y = old_snake_y[snake_len] + snake_wid
-      snake_y[snake_len] = new_y
-      if(new_y > bkgrd_y) snake_y[snake_len] = 0
-    }
+    last_direction = travel_direction
     
-    # Upwards Move
-    if(keyCode == UP_ARROW){
-      direction = "up"
-      old_snake_x = snake_x
-      old_snake_y = snake_y
-      for(i in 0:(snake_len - 1)){
-        snake_x[i] = old_snake_x[i+1]
-        snake_y[i] = old_snake_y[i+1]
-      }
-      new_y = old_snake_y[snake_len] - snake_wid
-      snake_y[snake_len] = new_y
-      if(new_y < 0) snake_y[snake_len] = bkgrd_y
-    }
+  }
     
     # Collision Code
     for(i in 0:(snake_len - 1)){
@@ -130,15 +152,23 @@ draw <- function(){
         snake_stop = TRUE
     }
     
-    # Eat Fruit
-    fruit_dx = abs(fruit_x - snake_x[snake_len])
-    fruit_dy = abs(fruit_y - snake_y[snake_len])
-    if(fruit_dx < snake_wid & fruit_dy < snake_wid){
-      fruit_x = runif(1, min = 0, max = bkgrd_x/2)%%snake_wid * snake_wid 
-      fruit_y = runif(1, min = 0, max = bkgrd_y/2)%%snake_wid * snake_wid 
-    }
     
-  }
+    # fruit_collision = check_collision( snake_x_coord = snake_x[snake_len], 
+    #                                    snake_y_coord = snake_y[snake_len],  
+    #                                    collsion_x = fruit_x, 
+    #                                    collision_y = fruit_y,
+    #                                    snake_wid = snake_wid)
+    # Check if fruit was eaten
+    fruit_dx = abs(snake_x[snake_len] - fruit_x)
+    fruit_dy = abs(snake_y[snake_len] - fruit_y)
+    if(fruit_dx < snake_wid & fruit_dy < snake_wid){
+    # if(fruit_collision == TRUE){
+      fruit_x = runif(1, min = 0, max = bkgrd_x/2)
+      fruit_y = runif(1, min = 0, max = bkgrd_y/2)
+      snake_len = snake_len + 1
+      snake_x = grow_snake(1, snake_x, snake_len, snake_wid, travel_direction)
+      snake_y = grow_snake(2, snake_y, snake_len, snake_wid, travel_direction)
+    }
   
 }
 
